@@ -9,6 +9,7 @@
   http://www.springframework.org/schema/aop/spring-aop.xsd">
 
   <bean id="knight" class="com.sknn.chap0.knights.BraveKnight">
+    <!--通过构造器参数实现持有实例初始化-->
     <constructor-arg ref="quest"/>
   </bean>
 
@@ -20,7 +21,8 @@
     <aop:aspect ref="minstrel"><!--将通用功能类声明为切面-->
 
       <!--定义切入点,AspectJ切点表达式语法 在执行embarkOnQuest()时,定义为一个切入点-->
-      <aop:pointcut id="embark" expression="execution(void com.sknn.chap0.knights.RescueDamseQuest.embark(..))"/>
+      <aop:pointcut id="embark"
+        expression="execution(void com.sknn.chap0.knights.RescueDamseQuest.embark(..))"/>
 
       <!--pointcut-ref属性引入名为embark的切入点-->
       <aop:before method="singBeforeQuest" pointcut-ref="embark"/><!--定义前置通知-->

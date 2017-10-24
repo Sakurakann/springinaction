@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:p="http://www.springframework.org/schema/p"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <!--对于没有公开的构造器 如单例类,实现创建Spring管理的Bean 使用Bean标签的factory-method属性
+    该属性允许调用一个指定的静态方法,代替构造器来创建一个单例类的实例.
+  -->
+  <bean class="com.sknn.chap0.springidol.Stage" id="stage" factory-method="instance">
+    <!--property标签与constructor-arg类似,都是注入值,只不过property是通过setter();而后者是通过构造器
+      一旦被实例化,Spring就会调用property中设定的值的setter方法将属性值设置为value\ref指定的值.
+      注意setter方法的命名规范.!!!
+    -->
+    <property name="name" value="sakurakann"/><!-- setter()注入 -->
+   </bean>
+
+  <!--init-method在Bean实例化后立即调用,destroy-method在Spring容器销毁前调用-->
+  <!--可以在beans标签的default-init-method和default-destroy-method
+    为旗下所有的bean标签设置共同的初始化和销毁方法
+  -->
+  <bean class="com.sknn.chap0.springidol.Auditorium" id="auditorium"
+    init-method="turnOnLights" destroy-method="turnOffLights">
+    <constructor-arg ref="stage"/><!-- 通过构造器注入 -->
+    <property name="room">
+      <!-- 通过setter设置内部类,Spring注入内部Bean 内部Bean没有id属性,或者说没有必要有id属性
+       内部Bean只适用于一次性注入,而且不能被其他外部类引用.
+       -->
+      <bean class="com.sknn.chap0.springidol.Auditorium.Room"/>
+    </property>
+  </bean>
+
+  <!-- 使用命名空间p来简化<property>标签设置属性值的过程,二者等价,主要是p使用起来比较简便.
+    instanceName-ref用来标识告知Spring应该装配一个实例引用而不是直接值.
+  -->
+  <bean class="com.sknn.chap0.springidol.Guitar" id="guitar"/>
+  <bean class="com.sknn.chap0.springidol.Cymbal" id="cymbal"/>
+  <bean class="com.sknn.chap0.springidol.Instrumentalist" id="instrumentalist"
+    p:firstName="sakura" p:instrument-ref="guitar"/>
+
+  <bean class="com.sknn.chap0.springidol.Instrumentalist" id="instrumentalists">
+    <!-- Map及其实现类的Spring装配Bean -->
+    <property name="instrumentMap">
+      <map key-type="java.lang.String" value-type="com.sknn.chap0.springidol.Instrument">
+        <entry key="guitar" value-ref="guitar"/>
+        <entry key="cymbal" value-ref="cymbal"/>
+      </map>
+    </property>
+
+    <property name="instruments">
+      <!--list-->
+      <list value-type="com.sknn.chap0.springidol.Instrument">
+        <ref bean="guitar"/>
+        <ref bean="cymbal"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

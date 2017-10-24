@@ -4,8 +4,8 @@
   <groupId>com.sknn</groupId>
   <artifactId>springinaction</artifactId>
   <packaging>war</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>springinaction Maven Webapp</name>
+  <version>1.0</version>
+  <name>springinaction</name>
   <url>http://maven.apache.org</url>
 
 <!--extra jar version define-->
@@ -50,13 +50,23 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aspects</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
       <version>${spring.version}</version>
       <scope>test</scope>
     </dependency>
 <!--end spring jar-->
 
-    <dependency>
+    <!--<dependency>
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
       <version>1.8.11</version>
@@ -65,7 +75,7 @@
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjweaver</artifactId>
       <version>1.8.11</version>
-    </dependency>
+    </dependency>-->
 
 
 
