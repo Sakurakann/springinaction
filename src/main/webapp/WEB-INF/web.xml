@@ -1,0 +1,71 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+  <display-name>spring in action</display-name>
+<!--标签顺序:1 filter;2 listener;3 servlet;-->
+
+<!--filter-->
+  <!--encoding filter:字符编码过滤器-->
+  <filter>
+    <filter-name>charEncoding</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <!--编码字符集-->
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <!--是否强制编码-->
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>charEncoding</filter-name>
+    <url-pattern>*</url-pattern>
+  </filter-mapping>
+  <!--encoding filter end:字符编码过滤器结束-->
+<!--filter end-->
+
+<!--listener-->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+<!--listener end-->
+
+<!--session 过期时间,单位分钟-->
+  <session-config>
+    <session-timeout>60</session-timeout>
+  </session-config>
+<!--session end-->
+
+<!--welcome files-->
+  <welcome-file-list>
+    <welcome-file>/index.html</welcome-file>
+  </welcome-file-list>
+<!--welcome files end-->
+
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/WEB-INF/error/error.jsp</location>
+  </error-page>
+
+  <!--<taglib>
+    <taglib-uri></taglib-uri>
+    <taglib-location></taglib-location>
+  </taglib>-->
+
+<!--限制对jsp文件的直接访问-->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Restrict access to JSP pages</web-resource-name>
+      <url-pattern>*.jsp</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description>With no roles defined, no access granted</description>
+    </auth-constraint>
+  </security-constraint>
+<!--限制结束-->
+</web-app>
