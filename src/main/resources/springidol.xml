@@ -2,13 +2,22 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:p="http://www.springframework.org/schema/p"
+  xmlns:util="http://www.springframework.org/schema/util"
+
   xsi:schemaLocation="http://www.springframework.org/schema/beans
-   http://www.springframework.org/schema/beans/spring-beans.xsd">
+   http://www.springframework.org/schema/beans/spring-beans.xsd
+
+   http://www.springframework.org/schema/util
+   http://www.springframework.org/schema/util/spring-util.xsd">
+  <!-- xsi中 一个命名空间的url描述必须成对出现.-->
 
   <!--对于没有公开的构造器 如单例类,实现创建Spring管理的Bean 使用Bean标签的factory-method属性
     该属性允许调用一个指定的静态方法,代替构造器来创建一个单例类的实例.
   -->
-  <bean class="com.sknn.chap0.springidol.Stage" id="stage" factory-method="instance">
+  <bean class="com.sknn.chap0.springidol.Stage" id="stage" factory-method="instance"
+    scope="prototype"><!--scope设置Bean的作用域,默认为singleton单例的,可以设置为prototype(每次都新建),
+       request(MVC下有用),session(MVC)
+    -->
     <!--property标签与constructor-arg类似,都是注入值,只不过property是通过setter();而后者是通过构造器
       一旦被实例化,Spring就会调用property中设定的值的setter方法将属性值设置为value\ref指定的值.
       注意setter方法的命名规范.!!!
@@ -22,7 +31,7 @@
   -->
   <bean class="com.sknn.chap0.springidol.Auditorium" id="auditorium"
     init-method="turnOnLights" destroy-method="turnOffLights">
-    <constructor-arg ref="stage"/><!-- 通过构造器注入 -->
+    <constructor-arg ref="stage"/><!-- 通过构造器注入 --><!-- 还可以使用c:命名空间来简化构造器注入 -->
     <property name="room">
       <!-- 通过setter设置内部类,Spring注入内部Bean 内部Bean没有id属性,或者说没有必要有id属性
        内部Bean只适用于一次性注入,而且不能被其他外部类引用.
@@ -48,13 +57,46 @@
       </map>
     </property>
 
+    <!-- 当Map中的键值对均为String类型时,建议使用<props>标签,并将属性类型设置为java.util.Properties -->
+    <property name="insProp">
+      <props>
+        <prop key="1">do</prop>
+        <prop key="2">re</prop>
+      </props>
+    </property>
+
+    <!-- list标签装配Collection与<set>标签可以互换使用,但是使用<set>时,元素不能重复!! -->
     <property name="instruments">
-      <!--list-->
       <list value-type="com.sknn.chap0.springidol.Instrument">
         <ref bean="guitar"/>
         <ref bean="cymbal"/>
       </list>
     </property>
+
+    <!-- 设置空值,当不能完全确定属性的默认值会为NULL,那就必须显式地为该属性装配一个NULL值.
+      显式装配NULL还有一个原因是为了覆盖自动装配的值.
+     -->
+    <property name="num"><null/></property>
+  </bean>
+
+  <!-- util是命名空间,他可以创建一个集合,类型在:后指定,这个集合包含了所有的其二级标签下的<bean>指定的Spring Bean
+   -->
+  <!-- 使用util标签加载配置文件,location指定了文件的位置.同时可以通过SpEL获取到其中的指定键的值. -->
+  <util:properties id="settings" location="classpath:setting.properties"/>
+
+  <util:list id="stageList">
+    <bean class="com.sknn.chap0.springidol.Stage" p:name="#{settings['oracle.driverclass']}"/>
+    <bean class="com.sknn.chap0.springidol.Stage" p:name="#{settings['oracle.username']}"/>
+    <bean class="com.sknn.chap0.springidol.Stage" p:name="#{settings['oracle.password']}"/>
+    <bean class="com.sknn.chap0.springidol.Stage" p:name="#{settings['oracle.url']}"/>
+  </util:list>
+
+  <bean class="com.sknn.chap0.springidol.Stages" id="stages">
+    <!-- SpEL表达式:使用#{} 为属性赋值,可以涉及到一些复杂的初始化,结合其中的运算如:四则运算\逻辑运算\三目运算
+      还可以匹配正则表达式,部分格式等同于EL表达式.可以使用T()来引用类以访问其中的静态方法和常量.其中方法可以连接使用.
+    -->
+    <property name="stages" value="#{stageList}"/>
+    <property name="stage" value="#{stageList[T(java.lang.Math).random() * stageList.size()]}"/>
   </bean>
 
 </beans>

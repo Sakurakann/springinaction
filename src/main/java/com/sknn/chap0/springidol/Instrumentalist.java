@@ -2,6 +2,7 @@ package com.sknn.chap0.springidol;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,6 +13,25 @@ import java.util.Map;
  * Author: Haiyangp.
  */
 public class Instrumentalist {
+
+  public Integer getNum() {
+    return num;
+  }
+
+  public void setNum(Integer num) {
+    this.num = num;
+  }
+
+  private Integer num;
+  private Properties insProp;
+
+  public Properties getInsProp() {
+    return insProp;
+  }
+
+  public void setInsProp(Properties insProp) {
+    this.insProp = insProp;
+  }
 
   private Map<String, Instrument> instrumentMap;
   private Collection<Instrument> instruments;
